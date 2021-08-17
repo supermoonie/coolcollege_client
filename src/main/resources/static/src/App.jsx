@@ -12,14 +12,11 @@ import Brightness7Icon from '@material-ui/icons/Brightness7';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import Theme from "@/lib/Theme";
-import NewConnection from "@/components/NewConnection";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import TabPanel from "@/components/TabPanel";
-import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
+
+const URL_MAP = {
+    'queryCourseByPage': "https://coolapi.coolcollege.cn/enterprise-api/course/queryCourseByPage?pageNumber={pageIndex}&pageSize={pageSize}&timestamp={timestamp}&classifyId=&queryType=&title=&statusType=all&sortType=all&classifyType=all&order=desc&image_text=all&liveCourseStatus=false&access_token={token}"
+}
 
 echarts.registerTheme('custom-dark', {
     legend: {
