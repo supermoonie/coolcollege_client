@@ -18,7 +18,7 @@ import org.cef.handler.CefMessageRouterHandlerAdapter;
  * @since 2021/7/17
  */
 @Slf4j
-public class PreferencesRouter extends CefMessageRouterHandlerAdapter {
+    public class PreferencesRouter extends CefMessageRouterHandlerAdapter {
 
     private static final String PREFERENCES_GET_STRING = "preferences:get:string:";
     private static final String PREFERENCES_SET_STRING = "preferences:set:string:";

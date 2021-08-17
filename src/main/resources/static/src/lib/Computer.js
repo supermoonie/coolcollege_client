@@ -1,22 +1,22 @@
-const Jvm = {
+const Computer = {
     /**
-     * 获取本地jvm信息
+     * 获取当前系统
      *
      * @returns {Promise<>}
      */
-    getLocalJvm: () => (
+    currentOs: () => (
         new Promise((resolve, reject) => {
-            window.jvmQuery({
-                request: "GET_LOCAL_JVM",
+            window.computerQuery({
+                request: "CURRENT_OS",
                 onSuccess: res => {
-                    resolve(JSON.parse(res));
+                    resolve(res);
                 },
                 onFailure: (code, error) => {
                     reject({code: code, error: error});
                 }
             });
         })
-    ),
+    )
 };
 
-export default Jvm;
+export default Computer;

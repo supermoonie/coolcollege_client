@@ -7,6 +7,8 @@ import com.github.supermoonie.coolcollege.handler.AppHandler;
 import com.github.supermoonie.coolcollege.handler.DisplayHandler;
 import com.github.supermoonie.coolcollege.handler.FocusHandler;
 import com.github.supermoonie.coolcollege.handler.ResourceRequestHandler;
+import com.github.supermoonie.coolcollege.router.ComputerRouter;
+import com.github.supermoonie.coolcollege.router.DownloadRouter;
 import com.github.supermoonie.coolcollege.router.ThemeRouter;
 import com.github.supermoonie.coolcollege.ui.MenuBar;
 import com.github.supermoonie.coolcollege.utils.Folders;
@@ -45,7 +47,10 @@ import java.util.prefs.Preferences;
 @Slf4j
 public class App extends JFrame {
 
-    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36";
+    public static final String USER_AGENT = SystemUtils.IS_OS_WINDOWS ?
+            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"
+            :
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36";
 
     @Getter
     private static App instance;
@@ -136,6 +141,8 @@ public class App extends JFrame {
 
     private void addRouter() {
         client.addMessageRouter(ThemeRouter.getInstance().getRouter());
+        client.addMessageRouter(ComputerRouter.getInstance().getRouter());
+        client.addMessageRouter(DownloadRouter.getInstance().getRouter());
     }
 
     public static void main(String[] args) {

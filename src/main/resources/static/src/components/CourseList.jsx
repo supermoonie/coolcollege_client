@@ -22,7 +22,7 @@ const courseDetailUrl = "https://coolapi.coolcollege.cn/enterprise-api/course/se
 
 const styles = theme => ({
     card: {
-        width: 280,
+        width: navigator.userAgent.indexOf('Mac OS') > 0 ? 200 : 280,
     },
     media: {
         height: 100,
@@ -87,6 +87,7 @@ class CourseList extends React.Component {
             token: this.props.token
         })).then(res => {
             const data = res.data;
+            console.log(data);
             this.setState({
                 selectedTitle: data['title'],
                 detailItems: data['resourceList']
@@ -131,7 +132,7 @@ class CourseList extends React.Component {
                     {
                         this.state.detailItems.map((item, index) => (
                             <ListItem button key={'detail-item-' + index}>
-                                <ListItemText primary={item['actualName']}/>
+                                <ListItemText primary={item['actualName']} secondary={item['path']}/>
                                 <ListItemSecondaryAction>
                                     <IconButton edge="end" aria-label="delete">
                                         <GetAppIcon />
