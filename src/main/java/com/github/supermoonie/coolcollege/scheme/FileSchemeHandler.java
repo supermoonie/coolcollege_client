@@ -91,6 +91,7 @@ public class FileSchemeHandler extends CefResourceHandlerAdapter {
             offset = 0;
             bytesRead.set(0);
         }
+        log.info("hasData: {}", hasData);
         return hasData;
     }
 }

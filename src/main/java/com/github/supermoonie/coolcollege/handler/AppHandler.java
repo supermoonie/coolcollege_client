@@ -33,7 +33,7 @@ public class AppHandler extends CefAppHandlerAdapter {
 
     @Override
     public void onContextInitialized() {
-        CefApp.getInstance().registerSchemeHandlerFactory("https", "console4j",
+        CefApp.getInstance().registerSchemeHandlerFactory("https", "a",
                 (browser, frame, schemeName, request) -> new ClientSchemeHandler());
         CefApp.getInstance().registerSchemeHandlerFactory(FileSchemeHandler.WIN_SCHEME, "",
                 (browser, frame, schemeName, request) -> new FileSchemeHandler());

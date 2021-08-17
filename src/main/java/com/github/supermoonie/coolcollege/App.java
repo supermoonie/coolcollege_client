@@ -13,6 +13,7 @@ import com.github.supermoonie.coolcollege.utils.Folders;
 import com.github.supermoonie.coolcollege.utils.PropertiesUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.cef.CefApp;
@@ -86,6 +87,11 @@ public class App extends JFrame {
         cefApp = JCefLoader.installAndLoadCef(settings);
         client = cefApp.createClient();
         String indexUrl = "https://pro.coolcollege.cn/#/index-auth-login-new?source=ding";
+        String eid = preferences.get("/cool_college/eid", null);
+        if (StringUtils.isNotEmpty(eid)) {
+            indexUrl = String.format("https://pro.coolcollege.cn/?eid=%s#/home", eid);
+        }
+        log.info("indexUrl: {}", indexUrl);
         cefBrowser = client.createBrowser(indexUrl, false, false);
         client.addFocusHandler(new FocusHandler());
         client.addDisplayHandler(new DisplayHandler());
@@ -119,8 +125,8 @@ public class App extends JFrame {
             }
         });
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(screenSize.width / 2 - 800 / 2, screenSize.height / 2 - 600 / 2);
-        setMinimumSize(new Dimension(800, 600));
+        setLocation(screenSize.width / 2 - 1000 / 2, screenSize.height / 2 - 800 / 2);
+        setMinimumSize(new Dimension(1000, 800));
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setResizable(true);
         setFocusable(true);
@@ -147,7 +153,9 @@ public class App extends JFrame {
             FlatLightLaf.setup();
             FlatDarkLaf.setup();
             UIManager.setLookAndFeel(themeName);
-            Color bgColor = themeName.equals(FlatDarkLaf.class.getName()) ? new Color(100,48, 48, 48) : new Color(100, 250, 250, 250);
+            Color bgColor = themeName.equals(FlatDarkLaf.class.getName()) ?
+                    new Color(48,48, 48, 255) :
+                    new Color(250, 250, 250, 255);
             instance = new App(args, bgColor);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

@@ -159,7 +159,7 @@
         <profile>
             <id>release</id>
             <properties>
-                <host>https://client</host>
+                <host>https://a</host>
                 <release>true</release>
             </properties>
         </profile>
@@ -210,7 +210,7 @@
                                 <configuration>
                                     <mainClass>com.github.supermoonie.coolcollege.App</mainClass>
                                     <!-- optional -->
-                                    <name>Console4J</name>
+                                    <name>CoolCollegeClient</name>
                                     <assetsDir>${basedir}/assets</assetsDir>
                                     <copyDependencies>true</copyDependencies>
                                     <bundleJre>true</bundleJre>

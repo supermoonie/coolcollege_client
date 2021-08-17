@@ -19,7 +19,7 @@ let config = {
     entry: ENTRY,
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name]_index.js'
+        filename: '[name].js'
     },
     module: {
         rules: [

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ThemeProvider, withStyles} from "@material-ui/core";
+import {AppBar, Tab, Tabs, ThemeProvider, withStyles} from "@material-ui/core";
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import {SnackbarProvider} from 'notistack';
 import Container from "@material-ui/core/Container";
@@ -9,19 +9,16 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import {SpeedDial, SpeedDialIcon} from "@material-ui/lab";
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
-import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import Theme from "@/lib/Theme";
 import * as echarts from 'echarts';
-
-const URL_MAP = {
-    'queryCourseByPage': "https://coolapi.coolcollege.cn/enterprise-api/course/queryCourseByPage?pageNumber={pageIndex}&pageSize={pageSize}&timestamp={timestamp}&classifyId=&queryType=&title=&statusType=all&sortType=all&classifyType=all&order=desc&image_text=all&liveCourseStatus=false&access_token={token}"
-}
+import GetAppIcon from '@material-ui/icons/GetApp';
+import TabPanel from "@/components/TabPanel";
+import CourseList from "@/components/CourseList";
 
 echarts.registerTheme('custom-dark', {
     legend: {
         textStyle: {
-
             color: 'rgba(255, 255, 255, 0.8)'
         },
         inactiveColor: 'rgba(255, 255, 255, 0.3)'
@@ -30,8 +27,9 @@ echarts.registerTheme('custom-dark', {
 
 const styles = theme => ({
     speedDial: {
-        position: 'absolute',
-        bottom: theme.spacing(5),
+        zIndex: 1150,
+        position: 'fixed',
+        bottom: theme.spacing(4),
         right: theme.spacing(8),
     },
     container: {
@@ -49,16 +47,21 @@ class App extends React.Component {
         this.state = {
             value: undefined,
             dark: true,
+            activeTab: 0,
             openSpeedDial: false,
-            token: undefined
+            token: undefined,
+            eid: undefined,
         }
     }
 
     componentDidMount() {
         let url = new URL(window.location.href);
         const token = url.searchParams.get("token");
+        const eid = url.searchParams.get("eid");
+        console.log(eid);
         this.setState({
-            token: token
+            token: token,
+            eid: eid
         });
         Theme.getTheme().then(theme => {
             this.setState({
@@ -73,6 +76,29 @@ class App extends React.Component {
             <SnackbarProvider maxSnack={3}>
                 <CssBaseline/>
                 <Container className={classes.container}>
+                    <AppBar position="fixed" color="default">
+                        <Tabs value={this.state.activeTab}
+                              indicatorColor="primary"
+                              textColor="primary"
+                              onChange={(event, value) => {
+                                  console.log(value);
+                                  this.setState({
+                                      activeTab: value
+                                  })
+                              }}>
+                            <Tab label={"课程库"} id={"tab-0"} aria-details={"tab-panel-0"}/>
+                            <Tab label={"素材库"} id={"tab-1"} aria-details={"tab-panel-1"}/>
+                        </Tabs>
+                    </AppBar>
+                    <TabPanel value={this.state.activeTab} index={0} style={{marginTop: '48px', marginBottom: '64px'}}>
+                        {
+                            !!this.state.token ? <CourseList token={this.state.token} eid={this.state.eid}/> : null
+                        }
+                    </TabPanel>
+                    <TabPanel value={this.state.activeTab} index={1}>
+                        Item Two
+                    </TabPanel>
+
                     <SpeedDial
                         ariaLabel=""
                         className={classes.speedDial}
@@ -91,13 +117,12 @@ class App extends React.Component {
                         open={this.state.openSpeedDial}
                     >
                         <SpeedDialAction
-                            key={"newConnection"}
-                            icon={<AddIcon/>}
+                            key={"downloadManager"}
+                            icon={<GetAppIcon/>}
                             tooltipTitle={""}
                             title={""}
                             onClick={() => {
                                 this.setState({
-                                    showNewConnection: true,
                                     openSpeedDial: false
                                 })
                             }}
@@ -109,6 +134,7 @@ class App extends React.Component {
                             tooltipTitle={""}
                             onClick={() => {
                                 Theme.setTheme(this.state.dark ? 'light' : 'dark').then(res => {
+                                    console.log(res);
                                     this.setState({
                                         dark: !this.state.dark,
                                         openSpeedDial: false
