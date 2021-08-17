@@ -79,8 +79,8 @@ public class App extends JFrame {
         CefApp.addAppHandler(new AppHandler(args));
         cefApp = JCefLoader.installAndLoadCef(settings);
         client = cefApp.createClient();
-        String host = PropertiesUtil.getHost();
-        cefBrowser = client.createBrowser(host + "/index.html", false, false);
+        String indexUrl = "https://pro.coolcollege.cn/#/index-auth-login-new?source=ding";
+        cefBrowser = client.createBrowser(indexUrl, false, false);
         client.addFocusHandler(new FocusHandler());
         client.addDisplayHandler(new DisplayHandler());
         Component uiComponent = cefBrowser.getUIComponent();
@@ -107,8 +107,9 @@ public class App extends JFrame {
             }
         });
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setMinimumSize(new Dimension(800, 600));
         setLocation(screenSize.width / 2 - 800 / 2, screenSize.height / 2 - 600 / 2);
+        setMinimumSize(new Dimension(800, 600));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setResizable(true);
         setFocusable(true);
         setAutoRequestFocus(true);
