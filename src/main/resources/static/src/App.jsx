@@ -52,11 +52,17 @@ class App extends React.Component {
         this.state = {
             value: undefined,
             dark: true,
-            openSpeedDial: false
+            openSpeedDial: false,
+            token: undefined
         }
     }
 
     componentDidMount() {
+        let url = new URL(window.location.href);
+        const token = url.searchParams.get("token");
+        this.setState({
+            token: token
+        });
         Theme.getTheme().then(theme => {
             this.setState({
                 dark: "dark" === theme

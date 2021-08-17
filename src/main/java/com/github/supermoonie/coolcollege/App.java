@@ -6,6 +6,7 @@ import com.formdev.flatlaf.extras.FlatSVGUtils;
 import com.github.supermoonie.coolcollege.handler.AppHandler;
 import com.github.supermoonie.coolcollege.handler.DisplayHandler;
 import com.github.supermoonie.coolcollege.handler.FocusHandler;
+import com.github.supermoonie.coolcollege.handler.ResourceRequestHandler;
 import com.github.supermoonie.coolcollege.router.ThemeRouter;
 import com.github.supermoonie.coolcollege.ui.MenuBar;
 import com.github.supermoonie.coolcollege.utils.Folders;
@@ -19,6 +20,11 @@ import org.cef.CefClient;
 import org.cef.CefSettings;
 import org.cef.JCefLoader;
 import org.cef.browser.CefBrowser;
+import org.cef.browser.CefFrame;
+import org.cef.handler.CefRequestHandlerAdapter;
+import org.cef.handler.CefResourceRequestHandler;
+import org.cef.misc.BoolRef;
+import org.cef.network.CefRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,6 +89,12 @@ public class App extends JFrame {
         cefBrowser = client.createBrowser(indexUrl, false, false);
         client.addFocusHandler(new FocusHandler());
         client.addDisplayHandler(new DisplayHandler());
+        client.addRequestHandler(new CefRequestHandlerAdapter() {
+            @Override
+            public CefResourceRequestHandler getResourceRequestHandler(CefBrowser browser, CefFrame frame, CefRequest request, boolean isNavigation, boolean isDownload, String requestInitiator, BoolRef disableDefaultHandling) {
+                return new ResourceRequestHandler();
+            }
+        });
         Component uiComponent = cefBrowser.getUIComponent();
         getContentPane().add(uiComponent, BorderLayout.CENTER);
         if (!PropertiesUtil.isRelease()) {
