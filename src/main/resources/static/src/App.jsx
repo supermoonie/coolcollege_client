@@ -48,7 +48,7 @@ class App extends React.Component {
         this.state = {
             value: undefined,
             dark: true,
-            activeTab: 0,
+            activeTab: 1,
             openSpeedDial: false,
             token: undefined,
             eid: undefined,
