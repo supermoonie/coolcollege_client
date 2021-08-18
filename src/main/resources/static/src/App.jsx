@@ -15,6 +15,7 @@ import * as echarts from 'echarts';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import TabPanel from "@/components/TabPanel";
 import CourseList from "@/components/CourseList";
+import ResourceList from "@/components/ResourceList";
 
 echarts.registerTheme('custom-dark', {
     legend: {
@@ -95,8 +96,10 @@ class App extends React.Component {
                             !!this.state.token ? <CourseList token={this.state.token} eid={this.state.eid}/> : null
                         }
                     </TabPanel>
-                    <TabPanel value={this.state.activeTab} index={1}>
-                        Item Two
+                    <TabPanel value={this.state.activeTab} index={1} style={{marginTop: '48px', marginBottom: '64px'}}>
+                        {
+                            !!this.state.token ? <ResourceList token={this.state.token} eid={this.state.eid}/> : null
+                        }
                     </TabPanel>
 
                     <SpeedDial
