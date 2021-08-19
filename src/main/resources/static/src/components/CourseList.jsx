@@ -22,7 +22,7 @@ const courseDetailUrl = "https://coolapi.coolcollege.cn/enterprise-api/course/se
 
 const styles = theme => ({
     card: {
-        width: navigator.userAgent.indexOf('Mac OS') > 0 ? 200 : 280,
+        width: navigator.userAgent.indexOf('Mac OS') > 0 ? 180 : 280,
     },
     media: {
         height: 100,
@@ -30,6 +30,7 @@ const styles = theme => ({
     bottomAppBar: {
         top: 'auto',
         bottom: 0,
+        paddingLeft: 115
     },
     title: {
         marginLeft: theme.spacing(2),

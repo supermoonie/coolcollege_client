@@ -90,7 +90,7 @@ class ResourceList extends React.Component {
     render() {
         const classes = this.props.classes;
         return <React.Fragment>
-            <Container>
+            <Container style={{width: '100%', height: '100%', paddingTop: 36, overflow: 'hidden'}}>
                 <Breadcrumbs aria-label="breadcrumb">
                     <StyledBreadcrumb
                         key={'bread--'}
@@ -143,7 +143,7 @@ class ResourceList extends React.Component {
                 </Breadcrumbs>
                 <Divider style={{marginTop: 10}}/>
                 <Paper>
-                    <TableContainer style={{maxHeight: '490px'}}>
+                    <TableContainer style={{maxHeight: '600px'}}>
                         <Table aria-label="resource table" stickyHeader>
                             <TableHead>
                                 <TableRow>
