@@ -173,7 +173,7 @@ class ResourceList extends React.Component {
                                                     <IconButton edge="start" aria-label="download" size="small" onClick={() => {
                                                         Download.downloadReq([{
                                                             downloadId: item['resource']['id'],
-                                                            url: item['resource']['url'],
+                                                            url: item['resource']['path'],
                                                             savePath: '/Users/moonie/Downloads/',
                                                             fileName: item['resource']['name'],
                                                             extension: item['resource']['type']
