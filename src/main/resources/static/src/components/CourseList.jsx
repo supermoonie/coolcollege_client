@@ -22,7 +22,7 @@ const courseDetailUrl = "https://coolapi.coolcollege.cn/enterprise-api/course/se
 
 const styles = theme => ({
     card: {
-        width: navigator.userAgent.indexOf('Mac OS') > 0 ? 180 : 280,
+        width: navigator.userAgent.indexOf('Mac OS') > 0 ? 180 : 260,
     },
     media: {
         height: 100,
@@ -30,7 +30,7 @@ const styles = theme => ({
     bottomAppBar: {
         top: 'auto',
         bottom: 0,
-        paddingLeft: 115
+        paddingLeft: 150
     },
     title: {
         marginLeft: theme.spacing(2),
@@ -144,7 +144,7 @@ class CourseList extends React.Component {
                     }
                 </List>
             </Dialog>
-            <Grid container spacing={4}>
+            <Grid container direction="row" justifyContent="space-evenly" alignItems="flex-start" spacing={4}>
                 {
                     this.state.items.map((item, index) => (
                         <Grid item key={'item-' + index}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppBar, Tab, Tabs, ThemeProvider, withStyles} from "@material-ui/core";
+import {AppBar, ListItemIcon, Tab, Tabs, ThemeProvider, withStyles} from "@material-ui/core";
 import {SnackbarProvider} from 'notistack';
 import Container from "@material-ui/core/Container";
 import LightTheme from "@/components/LightTheme";
@@ -16,6 +16,10 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import Badge from "@material-ui/core/Badge";
+import MouseIcon from '@material-ui/icons/Mouse';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import SettingsIcon from '@material-ui/icons/Settings';
+import InfoIcon from '@material-ui/icons/Info';
 
 echarts.registerTheme('custom-dark', {
     legend: {
@@ -36,7 +40,7 @@ const styles = theme => ({
     container: {
         width: '100%',
         maxWidth: '100%',
-        paddingLeft: 115,
+        paddingLeft: 150,
         margin: 0,
         padding: 0
     },
@@ -46,6 +50,9 @@ const styles = theme => ({
         padding: theme.spacing(0, 1),
         ...theme.mixins.toolbar,
         justifyContent: 'flex-start',
+    },
+    drawerPaper: {
+        width: 150,
     },
 });
 
@@ -88,15 +95,20 @@ class App extends React.Component {
                     variant="persistent"
                     anchor="left"
                     open={true}
+                    classes={{
+                        paper: classes.drawerPaper
+                    }}
                 >
                     <List>
                         <div className={classes.drawerHeader}>
 
                         </div>
-                        <ListItem button key="spider" selected>
+                        <ListItem button key="spider" alignItems="center" selected>
+                            <ListItemIcon style={{minWidth: 45}}><MouseIcon/></ListItemIcon>
                             <ListItemText primary="采集区"/>
                         </ListItem>
                         <ListItem button key="download">
+                            <ListItemIcon style={{minWidth: 45}}><GetAppIcon/></ListItemIcon>
                             <ListItemText>
                                 <Badge badgeContent={4} color="primary">
                                     下载区
@@ -107,15 +119,17 @@ class App extends React.Component {
                     <Divider/>
                     <List>
                         <ListItem button key={'settings'}>
+                            <ListItemIcon style={{minWidth: 45}}><SettingsIcon/></ListItemIcon>
                             <ListItemText primary="设置"/>
                         </ListItem>
                         <ListItem button key={'about'}>
+                            <ListItemIcon style={{minWidth: 45}}><InfoIcon/></ListItemIcon>
                             <ListItemText primary="关于"/>
                         </ListItem>
                     </List>
                 </Drawer>
                 <Container className={classes.container}>
-                    <AppBar position="fixed" color="default" style={{paddingLeft: 113}}>
+                    <AppBar position="fixed" color="default" style={{paddingLeft: 155}}>
                         <Tabs value={this.state.activeTab}
                               indicatorColor="primary"
                               textColor="primary"
