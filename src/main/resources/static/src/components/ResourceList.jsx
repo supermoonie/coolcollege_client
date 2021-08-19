@@ -18,6 +18,7 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Chip from '@material-ui/core/Chip';
 import FolderIcon from '@material-ui/icons/Folder';
 import GetAppIcon from "@material-ui/icons/GetApp";
+import Download from "../lib/Download";
 
 const resourceListUrl = "https://coolapi.coolcollege.cn/enterprise-api/course/resource/list?keyword={keyword}&parent_id={parentId}&resource_classify={resourceClassify}&page_number={pageIndex}&page_size={pageSize}&course_flag={courseFlag}&review={review}&access_token={token}";
 
@@ -71,6 +72,10 @@ class ResourceList extends React.Component {
         })).then(res => {
             const data = res.data;
             console.log(data);
+            if ('code' in data && data['code'] === 801) {
+                window.location.href = 'https://pro.coolcollege.cn/#/index-auth-login-new?source=ding';
+                return;
+            }
             this.setState({
                 totalPage: data['pages'],
                 totalRows: data['total'],
@@ -165,7 +170,17 @@ class ResourceList extends React.Component {
                                                 <TableCell
                                                     align="center">{item['resource']['type']}</TableCell>
                                                 <TableCell align="center">
-                                                    <IconButton edge="end" aria-label="delete">
+                                                    <IconButton edge="start" aria-label="download" size="small" onClick={() => {
+                                                        Download.downloadReq([{
+                                                            downloadId: item['resource']['id'],
+                                                            url: item['resource']['url'],
+                                                            savePath: '/Users/moonie/Downloads/',
+                                                            fileName: item['resource']['name'],
+                                                            extension: item['resource']['type']
+                                                        }]).then(res => {
+                                                            console.log(res);
+                                                        })
+                                                    }}>
                                                         <GetAppIcon/>
                                                     </IconButton>
                                                 </TableCell>
@@ -178,7 +193,7 @@ class ResourceList extends React.Component {
                                                           breadcrumbs.push({
                                                               name: item['resource']['name'],
                                                               id: item['resource']['id']
-                                                          })
+                                                          });
                                                           this.setState({
                                                               parentId: item['resource']['id'],
                                                               resourceClassify: item['resource']['id'],

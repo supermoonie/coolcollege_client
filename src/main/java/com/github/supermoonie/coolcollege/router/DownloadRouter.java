@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.RequestBuilder;
 import org.cef.browser.CefBrowser;
@@ -83,7 +81,8 @@ public class DownloadRouter extends CefMessageRouterHandlerAdapter {
     private void onDownloadingQuery(String request, CefQueryCallback callback) {
         App.getInstance().getExecutor().execute(() -> {
             String reqText = request.substring(DOWNLOADING_QUERY.length());
-            List<String> idList = JSON.parseObject(reqText, new TypeReference<List<String>>(){});
+            List<String> idList = JSON.parseObject(reqText, new TypeReference<List<String>>() {
+            });
             Map<String, Integer> map = new HashMap<>();
             for (String id : idList) {
                 Integer progress = DOWNLOADING_MAP.getOrDefault(id, -2);
@@ -112,24 +111,24 @@ public class DownloadRouter extends CefMessageRouterHandlerAdapter {
                             byte[] buf = new byte[1024];
                             long readSize = 0;
                             int size;
-                            FileOutputStream fos = new FileOutputStream(target);
-                            List<Long> send = new ArrayList<>();
-                            while ((size = is.read(buf)) != -1) {
-                                fos.write(buf, 0, size);
-                                readSize = readSize + size;
-                                Long progress = ((readSize * 100) / contentLength);
-                                if (send.contains(progress)) {
-                                    continue;
+                            try (FileOutputStream fos = new FileOutputStream(target)) {
+                                List<Long> send = new ArrayList<>();
+                                while ((size = is.read(buf)) != -1) {
+                                    fos.write(buf, 0, size);
+                                    readSize = readSize + size;
+                                    Long progress = ((readSize * 100) / contentLength);
+                                    if (send.contains(progress)) {
+                                        continue;
+                                    }
+                                    send.add(progress);
+                                    log.info("{} : {}", req.getFileName(), progress);
+                                    if (progress % 2 == 0) {
+                                        DOWNLOADING_MAP.put(req.getDownloadId(), progress.intValue());
+                                    }
                                 }
-                                send.add(progress);
-                                log.info("{} : {}", req.getFileName(), progress);
-                                if (progress % 2 == 0) {
-                                    DOWNLOADING_MAP.put(req.getDownloadId(), progress.intValue());
-                                }
+                                DOWNLOADING_MAP.put(req.getDownloadId(), 100);
+                                fos.flush();
                             }
-                            DOWNLOADING_MAP.put(req.getDownloadId(), 100);
-                            fos.flush();
-                            fos.close();
                             return null;
                         });
                     } catch (IOException e) {
