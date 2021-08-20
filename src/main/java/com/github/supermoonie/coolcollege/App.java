@@ -7,10 +7,7 @@ import com.github.supermoonie.coolcollege.handler.AppHandler;
 import com.github.supermoonie.coolcollege.handler.DisplayHandler;
 import com.github.supermoonie.coolcollege.handler.FocusHandler;
 import com.github.supermoonie.coolcollege.handler.ResourceRequestHandler;
-import com.github.supermoonie.coolcollege.router.ClipboardRouter;
-import com.github.supermoonie.coolcollege.router.SystemRouter;
-import com.github.supermoonie.coolcollege.router.DownloadRouter;
-import com.github.supermoonie.coolcollege.router.ThemeRouter;
+import com.github.supermoonie.coolcollege.router.*;
 import com.github.supermoonie.coolcollege.ui.MenuBar;
 import com.github.supermoonie.coolcollege.utils.Folders;
 import com.github.supermoonie.coolcollege.utils.PropertiesUtil;
@@ -143,8 +140,10 @@ public class App extends JFrame {
     private void addRouter() {
         client.addMessageRouter(ThemeRouter.getInstance().getRouter());
         client.addMessageRouter(SystemRouter.getInstance().getRouter());
+        client.addMessageRouter(PreferencesRouter.getInstance().getRouter());
         client.addMessageRouter(DownloadRouter.getInstance().getRouter());
         client.addMessageRouter(ClipboardRouter.getInstance().getRouter());
+        client.addMessageRouter(FileRouter.getInstance().getRouter());
     }
 
     public static void main(String[] args) {
@@ -163,7 +162,7 @@ public class App extends JFrame {
             FlatDarkLaf.setup();
             UIManager.setLookAndFeel(themeName);
             Color bgColor = themeName.equals(FlatDarkLaf.class.getName()) ?
-                    new Color(48,48, 48, 255) :
+                    new Color(48, 48, 48, 255) :
                     new Color(250, 250, 250, 255);
             instance = new App(args, bgColor);
         } catch (Exception e) {

@@ -20,10 +20,11 @@ class Collection extends React.Component {
     render() {
         const classes = this.props.classes;
         return <React.Fragment>
-            <AppBar position="fixed" color="default" style={{paddingLeft: 155}}>
+            <AppBar position="fixed" color="default" style={{paddingLeft: 150}}>
                 <Tabs value={this.state.activeTab}
                       indicatorColor="primary"
                       textColor="primary"
+                      variant="fullWidth"
                       onChange={(event, value) => {
                           this.setState({
                               activeTab: value
@@ -35,12 +36,12 @@ class Collection extends React.Component {
             </AppBar>
             <TabPanel value={this.state.activeTab} index={0} style={{marginTop: '48px', marginBottom: '64px'}}>
                 {
-                    !!this.props.token ? <CourseList token={this.props.token} eid={this.props.eid}/> : null
+                    !!this.props.token ? <CourseList token={this.props.token} eid={this.props.eid} settings={this.props.settings}/> : null
                 }
             </TabPanel>
             <TabPanel value={this.state.activeTab} index={1}>
                 {
-                    !!this.props.token ? <ResourceList token={this.props.token} eid={this.props.eid}/> : null
+                    !!this.props.token ? <ResourceList token={this.props.token} eid={this.props.eid} settings={this.props.settings}/> : null
                 }
             </TabPanel>
         </React.Fragment>

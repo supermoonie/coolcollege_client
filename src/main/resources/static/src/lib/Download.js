@@ -24,6 +24,19 @@ const Download = {
                 }
             });
         })
+    ),
+    downloadQuery: () => (
+        new Promise((resolve, reject) => {
+            window.downloadQuery({
+                request: "DOWNLOAD_QUERY",
+                onSuccess: res => {
+                    resolve(JSON.parse(res));
+                },
+                onFailure: (code, error) => {
+                    reject({code: code, error: error});
+                }
+            });
+        })
     )
 };
 

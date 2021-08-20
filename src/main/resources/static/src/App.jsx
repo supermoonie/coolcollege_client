@@ -21,6 +21,9 @@ import Collection from "./components/Collection";
 import DownloadManager from "./components/DownloadManager";
 import Settings from "./components/Settings";
 import About from "./components/About";
+import System from "@/lib/System";
+import Preferences from "@/lib/Preferences";
+import Download from "@/lib/Download";
 
 echarts.registerTheme('custom-dark', {
     legend: {
@@ -65,12 +68,18 @@ class App extends React.Component {
         super(props);
         this.state = {
             value: undefined,
-            dark: true,
             activeTab: 0,
             openSpeedDial: false,
             token: undefined,
             eid: undefined,
-            selectedMenu: 'settings'
+            selectedMenu: 'collection',
+            settings: {
+                downloadFolder: undefined,
+                dark: true
+            },
+            downloadingNum: 0,
+            downloadingList: [],
+            downloadedList: []
         }
     }
 
@@ -83,27 +92,54 @@ class App extends React.Component {
             eid: eid
         });
         Theme.getTheme().then(theme => {
-            this.setState({
-                dark: "dark" === theme
+            let settings = this.state.settings;
+            settings.dark = "dark" === theme;
+            Preferences.getString("/download/folder").then(value => {
+                if (!!value) {
+                    settings.downloadFolder = value;
+                    this.setState({
+                        settings: settings
+                    })
+                } else {
+                    System.defaultDownloadFolder().then(folder => {
+                        settings.downloadFolder = folder;
+                        this.setState({
+                            settings: settings
+                        }, () => {
+                            Preferences.setString("/download/folder", folder).then(res => console.log(res));
+                        })
+                    })
+                }
             })
-        })
+        });
+        setInterval(() => {
+            Download.downloadQuery().then(res => {
+                let downloadingList = res.filter(item => item.status === 'waiting' || item.status === 'downloading');
+                let downloadedList = res.filter(item => item.status === 'done');
+                this.setState({
+                    downloadingList: downloadingList,
+                    downloadingNum: downloadingList.length,
+                    downloadedList: downloadedList
+                })
+            })
+        }, 500);
     }
 
-    onDark = (dark) => {
+    onSettingsChange = settings => {
         this.setState({
-            dark: dark
+            settings: settings
         })
     };
 
     render() {
         const classes = this.props.classes;
         const router = {
-            collection: <Collection token={this.state.token} eid={this.state.eid}/>,
-            download_manager: <DownloadManager/>,
-            settings: <Settings onDark={this.onDark} dark={this.state.dark}/>,
+            collection: <Collection token={this.state.token} eid={this.state.eid} settings={this.state.settings}/>,
+            download_manager: <DownloadManager downloadingList={this.state.downloadingList} downloadedList={this.state.downloadedList}/>,
+            settings: <Settings onSettingsChange={this.onSettingsChange} settings={this.state.settings}/>,
             about: <About/>
         };
-        return <ThemeProvider theme={this.state.dark ? DarkTheme : LightTheme}>
+        return <ThemeProvider theme={this.state.settings.dark ? DarkTheme : LightTheme}>
             <SnackbarProvider maxSnack={3}>
                 <CssBaseline/>
                 {/*左侧菜单栏*/}
@@ -139,7 +175,7 @@ class App extends React.Component {
                                   }}>
                             <ListItemIcon style={{minWidth: 45}}><ImportExportIcon/></ListItemIcon>
                             <ListItemText>
-                                <Badge badgeContent={4} color="primary">
+                                <Badge badgeContent={this.state.downloadingNum} color="primary">
                                     传输区
                                 </Badge>
                             </ListItemText>

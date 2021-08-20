@@ -1,4 +1,4 @@
-const Computer = {
+const System = {
     /**
      * 获取当前系统
      *
@@ -6,7 +6,7 @@ const Computer = {
      */
     os: () => (
         new Promise((resolve, reject) => {
-            window.computerQuery({
+            window.systemQuery({
                 request: "CURRENT_OS",
                 onSuccess: res => {
                     resolve(res);
@@ -24,7 +24,7 @@ const Computer = {
      */
     defaultDownloadFolder: () => (
         new Promise((resolve, reject) => {
-            window.computerQuery({
+            window.systemQuery({
                 request: "DEFAULT_DOWNLOAD_FOLDER",
                 onSuccess: res => {
                     resolve(res);
@@ -37,4 +37,4 @@ const Computer = {
     )
 };
 
-export default Computer;
+export default System;

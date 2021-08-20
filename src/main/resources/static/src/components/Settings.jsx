@@ -11,13 +11,11 @@ import Theme from "@/lib/Theme";
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import Divider from "@material-ui/core/Divider";
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
 import IconButton from "@material-ui/core/IconButton";
+import Preferences from "@/lib/Preferences";
+import File from "@/lib/File";
 
 const styles = theme => ({
     root: {
@@ -45,7 +43,7 @@ class Settings extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dark: props.dark
+            darkChecked: props.settings.dark
         }
     }
 
@@ -64,13 +62,15 @@ class Settings extends React.Component {
                             <Switch
                                 color="default"
                                 edge="end"
-                                checked={this.state.dark}
+                                checked={this.state.darkChecked}
                                 onChange={(event, checked) => {
                                     Theme.setTheme(checked ? 'dark' : 'light').then(res => {
+                                        let settings = this.props.settings;
+                                        settings.dark = checked;
+                                        this.props.onSettingsChange(settings);
                                         this.setState({
-                                            dark: checked
+                                            darkChecked: checked
                                         });
-                                        this.props.onDark(checked);
                                     });
                                 }}
                                 inputProps={{'aria-labelledby': 'switch-list-label-theme'}}
@@ -86,12 +86,27 @@ class Settings extends React.Component {
                             <Grid container justifyContent="center" alignItems="center" spacing={1}>
                                 <Grid item>
                                     <Typography variant="subtitle2">
-                                        /Users/supermoonie/Downloads/
+                                        {this.props.settings.downloadFolder}
                                     </Typography>
                                 </Grid>
                                 <Grid item>
-                                    <IconButton color="default" aria-label="folder open" component="span">
-                                        <FolderOpenIcon />
+                                    <IconButton color="default"
+                                                aria-label="folder open"
+                                                component="span"
+                                                onClick={() => {
+                                                    File.folderSelect(this.props.settings.downloadFolder).then(res => {
+                                                        if (!res) {
+                                                            return;
+                                                        }
+                                                        Preferences.setString("/download/folder", res).then(resp => {
+                                                            console.log(resp);
+                                                            let settings = this.props.settings;
+                                                            settings.downloadFolder = res;
+                                                            this.props.onSettingsChange(settings);
+                                                        })
+                                                    })
+                                                }}>
+                                        <FolderOpenIcon/>
                                     </IconButton>
                                 </Grid>
                             </Grid>

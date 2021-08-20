@@ -143,7 +143,7 @@ class ResourceList extends React.Component {
                 </Breadcrumbs>
                 <Divider style={{marginTop: 10}}/>
                 <Paper>
-                    <TableContainer style={{maxHeight: '600px'}}>
+                    <TableContainer style={{maxHeight: '580px'}}>
                         <Table aria-label="resource table" stickyHeader>
                             <TableHead>
                                 <TableRow>
@@ -174,7 +174,7 @@ class ResourceList extends React.Component {
                                                         Download.downloadReq([{
                                                             downloadId: item['resource']['id'],
                                                             url: item['resource']['path'],
-                                                            savePath: '/Users/moonie/Downloads/',
+                                                            savePath: this.props.settings.downloadFolder,
                                                             fileName: item['resource']['name'],
                                                             extension: item['resource']['type']
                                                         }]).then(res => {

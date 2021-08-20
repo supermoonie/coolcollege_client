@@ -24,12 +24,12 @@ import org.cef.handler.CefMessageRouterHandlerAdapter;
     private static final String PREFERENCES_SET_STRING = "preferences:set:string:";
 
     @Getter
-    private final CefMessageRouter preferencesRouter;
+    private final CefMessageRouter router;
     private static PreferencesRouter instance;
 
     private PreferencesRouter() {
-        preferencesRouter = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("preferencesQuery", "cancelPreferencesQuery"));
-        preferencesRouter.addHandler(this, true);
+        router = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("preferencesQuery", "cancelPreferencesQuery"));
+        router.addHandler(this, true);
     }
 
     public static PreferencesRouter getInstance() {
