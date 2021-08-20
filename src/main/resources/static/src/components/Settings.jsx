@@ -15,6 +15,9 @@ import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import IconButton from "@material-ui/core/IconButton";
 
 const styles = theme => ({
     root: {
@@ -52,7 +55,7 @@ class Settings extends React.Component {
             <Grid container className={classes.grid}>
                 <List subheader={<ListSubheader>设置</ListSubheader>} className={classes.list}>
                     <Divider/>
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <Brightness4Icon/>
                         </ListItemIcon>
@@ -74,13 +77,25 @@ class Settings extends React.Component {
                             />
                         </ListItemSecondaryAction>
                     </ListItem>
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <GetAppIcon/>
                         </ListItemIcon>
                         <ListItemText id="switch-list-label-folder" primary="下载目录"/>
                         <ListItemSecondaryAction>
-                            <FolderOpenIcon />
+                            <Grid container justifyContent="center" alignItems="center" spacing={1}>
+                                <Grid item>
+                                    <Typography variant="subtitle2">
+                                        /Users/supermoonie/Downloads/
+                                    </Typography>
+                                </Grid>
+                                <Grid item>
+                                    <IconButton color="default" aria-label="folder open" component="span">
+                                        <FolderOpenIcon />
+                                    </IconButton>
+                                </Grid>
+                            </Grid>
+
                         </ListItemSecondaryAction>
                     </ListItem>
                 </List>

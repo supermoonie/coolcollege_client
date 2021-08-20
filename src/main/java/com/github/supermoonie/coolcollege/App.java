@@ -7,7 +7,8 @@ import com.github.supermoonie.coolcollege.handler.AppHandler;
 import com.github.supermoonie.coolcollege.handler.DisplayHandler;
 import com.github.supermoonie.coolcollege.handler.FocusHandler;
 import com.github.supermoonie.coolcollege.handler.ResourceRequestHandler;
-import com.github.supermoonie.coolcollege.router.ComputerRouter;
+import com.github.supermoonie.coolcollege.router.ClipboardRouter;
+import com.github.supermoonie.coolcollege.router.SystemRouter;
 import com.github.supermoonie.coolcollege.router.DownloadRouter;
 import com.github.supermoonie.coolcollege.router.ThemeRouter;
 import com.github.supermoonie.coolcollege.ui.MenuBar;
@@ -66,7 +67,7 @@ public class App extends JFrame {
     private static Preferences preferences;
 
     public App(String[] args, Color bgColor) throws Exception {
-// init executor
+        // init executor
         executor = new ScheduledThreadPoolExecutor(
                 10,
                 new BasicThreadFactory.Builder()
@@ -141,8 +142,9 @@ public class App extends JFrame {
 
     private void addRouter() {
         client.addMessageRouter(ThemeRouter.getInstance().getRouter());
-        client.addMessageRouter(ComputerRouter.getInstance().getRouter());
+        client.addMessageRouter(SystemRouter.getInstance().getRouter());
         client.addMessageRouter(DownloadRouter.getInstance().getRouter());
+        client.addMessageRouter(ClipboardRouter.getInstance().getRouter());
     }
 
     public static void main(String[] args) {

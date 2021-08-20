@@ -10,29 +10,32 @@ import org.cef.browser.CefMessageRouter;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 
+import java.io.File;
+
 /**
  * @author supermoonie
  * @since 2021/8/18
  */
 @Slf4j
-public class ComputerRouter extends CefMessageRouterHandlerAdapter {
+public class SystemRouter extends CefMessageRouterHandlerAdapter {
 
     private static final String CURRENT_OS = "CURRENT_OS";
+    private static final String DEFAULT_DOWNLOAD_FOLDER = "DEFAULT_DOWNLOAD_FOLDER";
 
     @Getter
     private final CefMessageRouter router;
-    private static ComputerRouter instance;
+    private static SystemRouter instance;
 
-    private ComputerRouter() {
-        router = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("computerQuery", "cancelComputerQuery"));
+    private SystemRouter() {
+        router = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("systemQuery", "cancelSystemQuery"));
         router.addHandler(this, true);
     }
 
-    public static ComputerRouter getInstance() {
+    public static SystemRouter getInstance() {
         if (null == instance) {
-            synchronized (ComputerRouter.class) {
+            synchronized (SystemRouter.class) {
                 if (null == instance) {
-                    instance = new ComputerRouter();
+                    instance = new SystemRouter();
                 }
             }
         }
@@ -44,6 +47,8 @@ public class ComputerRouter extends CefMessageRouterHandlerAdapter {
         try {
             if (request.equalsIgnoreCase(CURRENT_OS)) {
                 onCurrentOs(callback);
+            } else if (request.equalsIgnoreCase(DEFAULT_DOWNLOAD_FOLDER)) {
+                onDefaultDownloadFolder(callback);
             } else {
                 callback.failure(404, "no cmd found");
                 return false;
@@ -54,6 +59,31 @@ public class ComputerRouter extends CefMessageRouterHandlerAdapter {
             callback.failure(500, e.getMessage());
             return true;
         }
+    }
+
+    private void onDefaultDownloadFolder(CefQueryCallback callback) {
+        App.getInstance().getExecutor().execute(() -> {
+            String userHome = SystemUtils.getUserHome().getAbsolutePath();
+            String downloadFolder = userHome + File.separator + "Downloads";
+            File folder = new File(downloadFolder);
+            if (folder.exists() && folder.isDirectory()) {
+                callback.success(downloadFolder);
+                return;
+            }
+            downloadFolder = userHome + File.separator + "Download";
+            folder = new File(downloadFolder);
+            if (folder.exists() && folder.isDirectory()) {
+                callback.success(downloadFolder);
+                return;
+            }
+            downloadFolder = userHome + File.separator + "Desktop";
+            folder = new File(downloadFolder);
+            if (folder.exists() && folder.isDirectory()) {
+                callback.success(downloadFolder);
+                return;
+            }
+            callback.success(userHome);
+        });
     }
 
     private void onCurrentOs(CefQueryCallback callback) {
