@@ -4,7 +4,7 @@ const Computer = {
      *
      * @returns {Promise<>}
      */
-    currentOs: () => (
+    os: () => (
         new Promise((resolve, reject) => {
             window.computerQuery({
                 request: "CURRENT_OS",

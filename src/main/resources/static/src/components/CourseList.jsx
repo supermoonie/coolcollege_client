@@ -22,7 +22,7 @@ const courseDetailUrl = "https://coolapi.coolcollege.cn/enterprise-api/course/se
 
 const styles = theme => ({
     card: {
-        width: navigator.userAgent.indexOf('Mac OS') > 0 ? 180 : 260,
+        width: '100%'
     },
     media: {
         height: 100,
@@ -144,10 +144,11 @@ class CourseList extends React.Component {
                     }
                 </List>
             </Dialog>
+
             <Grid container direction="row" justifyContent="space-evenly" alignItems="flex-start" spacing={4}>
                 {
                     this.state.items.map((item, index) => (
-                        <Grid item key={'item-' + index}>
+                        <Grid item lg={2} md={3} sm={4} xl={4} xs={6} key={'item-' + index}>
                             <Card className={classes.card} onClick={() => {
                                 this.fetchDetail(item['id']);
                                 this.setState({
@@ -172,6 +173,7 @@ class CourseList extends React.Component {
                     ))
                 }
             </Grid>
+
             <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
                 <Toolbar>
                     <Grid container spacing={4}>
