@@ -50,6 +50,8 @@ public class CustomHttpClient implements Closeable {
 
     public CustomHttpClient(HttpHost proxy) {
         this.cookieStore = new BasicCookieStore();
+        CONNECTION_MANAGER.setDefaultMaxPerRoute(10);
+        CONNECTION_MANAGER.setMaxTotal(1024);
         httpClient = HttpClientBuilder.create()
                 .setConnectionManager(CONNECTION_MANAGER)
                 .setDefaultCookieStore(cookieStore)

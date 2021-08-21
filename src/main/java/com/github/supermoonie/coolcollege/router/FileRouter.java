@@ -76,7 +76,7 @@ public class FileRouter extends CefMessageRouterHandlerAdapter {
                            CefQueryCallback callback) {
         try {
             if (request.equals(FILE_USER_HOME)) {
-                String userHome = SystemUtils.getHostName();
+                String userHome = SystemUtils.getUserHome().getAbsolutePath() + File.separator;
                 callback.success(userHome);
                 return true;
             } else if (request.startsWith(FILE_DIALOG)) {

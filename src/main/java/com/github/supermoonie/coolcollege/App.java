@@ -33,9 +33,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.prefs.Preferences;
 
 /**
@@ -59,16 +57,27 @@ public class App extends JFrame {
     @Getter
     private final CefBrowser cefBrowser;
     @Getter
-    private final ScheduledExecutorService executor;
+    private final ThreadPoolExecutor executor;
+    @Getter
+    private final ScheduledExecutorService scheduledExecutor;
     @Getter
     private static Preferences preferences;
 
     public App(String[] args, Color bgColor) throws Exception {
         // init executor
-        executor = new ScheduledThreadPoolExecutor(
-                10,
+        executor = new ThreadPoolExecutor(
+                10, 10, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
                 new BasicThreadFactory.Builder()
-                        .namingPattern("schedule-exec-%d")
+                        .namingPattern("executor-%d")
+                        .daemon(false)
+                        .uncaughtExceptionHandler((thread, throwable) -> {
+                            String error = String.format("thread: %s, error: %s", thread.toString(), throwable.getMessage());
+                            log.error(error, throwable);
+                        }).build(), (r, executor) -> log.warn("Thread: {} reject by {}", r.toString(), executor.toString()));
+        scheduledExecutor = new ScheduledThreadPoolExecutor(
+                5,
+                new BasicThreadFactory.Builder()
+                        .namingPattern("schedule-%d")
                         .daemon(false)
                         .uncaughtExceptionHandler((thread, throwable) -> {
                             String error = String.format("thread: %s, error: %s", thread.toString(), throwable.getMessage());
@@ -109,8 +118,9 @@ public class App extends JFrame {
         if (!PropertiesUtil.isRelease()) {
             MenuBar menuBar = new MenuBar(this, cefBrowser);
             setJMenuBar(menuBar);
+        } else {
+            setJMenuBar(new JMenuBar());
         }
-        addRouter();
         addWindowListener(new WindowAdapter() {
 
             @Override
@@ -118,9 +128,11 @@ public class App extends JFrame {
                 client.dispose();
                 App.this.dispose();
                 executor.shutdown();
+                scheduledExecutor.shutdown();
                 try {
-                    boolean ignore = executor.awaitTermination(5, TimeUnit.SECONDS);
-                    log.info("ignore: {}", ignore);
+                    boolean scheduledExecutorFlag = scheduledExecutor.awaitTermination(5, TimeUnit.SECONDS);
+                    boolean executorFlag = executor.awaitTermination(5, TimeUnit.SECONDS);
+                    log.info("scheduledExecutorFlag: {}, executorFlag: {}", scheduledExecutorFlag, executorFlag);
                 } catch (InterruptedException ex) {
                     log.error(ex.getMessage(), ex);
                 }
@@ -137,7 +149,8 @@ public class App extends JFrame {
         setVisible(true);
     }
 
-    private void addRouter() {
+    private static void addRouter() {
+        CefClient client = App.getInstance().getClient();
         client.addMessageRouter(ThemeRouter.getInstance().getRouter());
         client.addMessageRouter(SystemRouter.getInstance().getRouter());
         client.addMessageRouter(PreferencesRouter.getInstance().getRouter());
@@ -165,6 +178,7 @@ public class App extends JFrame {
                     new Color(48, 48, 48, 255) :
                     new Color(250, 250, 250, 255);
             instance = new App(args, bgColor);
+            addRouter();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             System.exit(0);

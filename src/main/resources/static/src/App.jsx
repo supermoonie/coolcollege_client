@@ -1,12 +1,11 @@
 import React from 'react';
-import {ListItemIcon, ThemeProvider, withStyles} from "@material-ui/core";
+import {Avatar, Button, Grid, ListItemIcon, ThemeProvider, withStyles} from "@material-ui/core";
 import {SnackbarProvider} from 'notistack';
 import Container from "@material-ui/core/Container";
 import LightTheme from "@/components/LightTheme";
 import DarkTheme from "@/components/DarkTheme";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Theme from "@/lib/Theme";
-import * as echarts from 'echarts';
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -24,15 +23,9 @@ import About from "./components/About";
 import System from "@/lib/System";
 import Preferences from "@/lib/Preferences";
 import Download from "@/lib/Download";
+import axios from "axios";
 
-echarts.registerTheme('custom-dark', {
-    legend: {
-        textStyle: {
-            color: 'rgba(255, 255, 255, 0.8)'
-        },
-        inactiveColor: 'rgba(255, 255, 255, 0.3)'
-    }
-});
+const userInfoUrl = "https://coolapi.coolcollege.cn/enterprise-api/score/getMyScoreSummary?access_token={token}";
 
 const styles = theme => ({
     speedDial: {
@@ -79,7 +72,9 @@ class App extends React.Component {
             },
             downloadingNum: 0,
             downloadingList: [],
-            downloadedList: []
+            downloadedList: [],
+            userName: undefined,
+            avatar: undefined,
         }
     }
 
@@ -90,6 +85,8 @@ class App extends React.Component {
         this.setState({
             token: token,
             eid: eid
+        }, () => {
+            this.fetchUserInfo();
         });
         Theme.getTheme().then(theme => {
             let settings = this.state.settings;
@@ -114,7 +111,11 @@ class App extends React.Component {
         });
         setInterval(() => {
             Download.downloadQuery().then(res => {
-                let downloadingList = res.filter(item => item.status === 'waiting' || item.status === 'downloading');
+                if (res.length === 0) {
+                    return;
+                }
+                let downloadingList = res.filter(item => item.status === 'waiting' || item.status === 'downloading')
+                    .sort((a, b) => b.progress - a.progress);
                 let downloadedList = res.filter(item => item.status === 'done');
                 this.setState({
                     downloadingList: downloadingList,
@@ -122,7 +123,27 @@ class App extends React.Component {
                     downloadedList: downloadedList
                 })
             })
-        }, 500);
+        }, 1000);
+    }
+
+    fetchUserInfo = () => {
+        axios.get(userInfoUrl.format({
+            token: this.state.token
+        })).then(res => {
+            const data = res.data;
+            console.log(data);
+            if ('code' in data && data['code'] === 801) {
+                Preferences.setString("/cool_college/token", "").then(res => {
+                    console.log(res);
+                    window.location.href = 'https://pro.coolcollege.cn/#/index-auth-login-new?source=ding';
+                })
+            } else {
+                this.setState({
+                    userName: data.name,
+                    avatar: data.avatar
+                })
+            }
+        })
     }
 
     onSettingsChange = settings => {
@@ -135,7 +156,8 @@ class App extends React.Component {
         const classes = this.props.classes;
         const router = {
             collection: <Collection token={this.state.token} eid={this.state.eid} settings={this.state.settings}/>,
-            download_manager: <DownloadManager downloadingList={this.state.downloadingList} downloadedList={this.state.downloadedList}/>,
+            download_manager: <DownloadManager downloadingList={this.state.downloadingList}
+                                               downloadedList={this.state.downloadedList}/>,
             settings: <Settings onSettingsChange={this.onSettingsChange} settings={this.state.settings}/>,
             about: <About/>
         };
@@ -152,11 +174,34 @@ class App extends React.Component {
                     }}
                 >
                     <List>
-                        <div className={classes.drawerHeader}>
-
+                        <div className={classes.drawerHeader} style={{paddingBottom: 5}}>
+                            <Grid container justifyContent="center" alignItems="center" spacing={2}>
+                                <Grid item lg={6} md={6} sm={6} xl={6} xs={6} style={{textAlign: 'right', paddingLeft: 25}}>
+                                    {
+                                        !!this.state.avatar ?
+                                            <Avatar alt={this.state.userName} src={this.state.avatar}/>
+                                            :
+                                            <Avatar>{!!this.state.userName ? this.state.userName.substring(0, 1) : ''}</Avatar>
+                                    }
+                                </Grid>
+                                <Grid item lg={6} md={6} sm={6} xl={6} xs={6}>
+                                    {this.state.userName}
+                                </Grid>
+                                <Grid item lg={12} md={12} sm={12} xl={12} xs={12} style={{textAlign: 'center'}}>
+                                    <Button fullWidth variant="contained" color="secondary" size="small" onClick={() => {
+                                        Preferences.setString("/cool_college/token", "").then(res => {
+                                            console.log(res);
+                                            window.location.href = 'https://pro.coolcollege.cn/#/index-auth-login-new?source=ding';
+                                        })
+                                    }}>
+                                        退出
+                                    </Button>
+                                </Grid>
+                            </Grid>
                         </div>
+                        <Divider/>
                         <ListItem button key="collection"
-                                  style={{marginBottom: 2}}
+                                  style={{marginBottom: 2, marginTop: 5}}
                                   selected={'collection' === this.state.selectedMenu}
                                   onClick={() => {
                                       this.setState({

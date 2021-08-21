@@ -28,7 +28,10 @@ public class ResourceRequestHandler extends CefResourceRequestHandlerAdapter {
             App.getPreferences().put("/cool_college/eid", eid);
         } else if (url.startsWith(COOL_COLLEGE_GET_SUMMARY_URL)) {
             final String token = url.substring(COOL_COLLEGE_GET_SUMMARY_URL.length());
-            log.info("token: {}", token);
+            log.info("frame: {}, token: {}", frame.getURL(), token);
+            if (frame.getURL().startsWith(PropertiesUtil.getHost())) {
+                return super.onBeforeResourceLoad(browser, frame, request);
+            }
             SwingUtilities.invokeLater(() -> {
                 App.getPreferences().put("/cool_college/token", token);
                 String eid = App.getPreferences().get("/cool_college/eid", "");

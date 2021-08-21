@@ -16,6 +16,8 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Preferences from "@/lib/Preferences";
 import File from "@/lib/File";
+import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
+import System from "@/lib/System";
 
 const styles = theme => ({
     root: {
@@ -43,8 +45,26 @@ class Settings extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            darkChecked: props.settings.dark
+            darkChecked: props.settings.dark,
+            logFolder: undefined
         }
+    }
+
+    componentDidMount() {
+        System.os().then(os => {
+            File.userHome().then(folder => {
+                if ('win' === os) {
+                    folder = folder + '\\cool_college\\logs';
+                } else {
+                    folder = folder + '/cool_college/logs';
+                }
+                this.setState({
+                    logFolder: folder
+                })
+            })
+
+        })
+
     }
 
     render() {
@@ -81,7 +101,7 @@ class Settings extends React.Component {
                         <ListItemIcon>
                             <GetAppIcon/>
                         </ListItemIcon>
-                        <ListItemText id="switch-list-label-folder" primary="下载目录"/>
+                        <ListItemText id="download-folder" primary="下载目录"/>
                         <ListItemSecondaryAction>
                             <Grid container justifyContent="center" alignItems="center" spacing={1}>
                                 <Grid item>
@@ -104,6 +124,34 @@ class Settings extends React.Component {
                                                             settings.downloadFolder = res;
                                                             this.props.onSettingsChange(settings);
                                                         })
+                                                    })
+                                                }}>
+                                        <FolderOpenIcon/>
+                                    </IconButton>
+                                </Grid>
+                            </Grid>
+
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon>
+                            <FormatListNumberedIcon/>
+                        </ListItemIcon>
+                        <ListItemText id="log-folder" primary="日志目录"/>
+                        <ListItemSecondaryAction>
+                            <Grid container justifyContent="center" alignItems="center" spacing={1}>
+                                <Grid item>
+                                    <Typography variant="subtitle2">
+                                        {!!this.state.logFolder ? this.state.logFolder : ''}
+                                    </Typography>
+                                </Grid>
+                                <Grid item>
+                                    <IconButton color="default"
+                                                aria-label="folder open"
+                                                component="span"
+                                                onClick={() => {
+                                                    File.openFolder(this.state.logFolder).then(res => {
+                                                        console.log(res);
                                                     })
                                                 }}>
                                         <FolderOpenIcon/>

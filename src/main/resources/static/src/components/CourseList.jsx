@@ -18,6 +18,7 @@ import axios from "axios";
 import CourseDetail from "@/components/CourseDetail";
 import Container from "@material-ui/core/Container";
 import {Scrollbars} from "react-custom-scrollbars";
+import Preferences from "@/lib/Preferences";
 
 const courseUrl = "https://coolapi.coolcollege.cn/enterprise-api/course/queryCourseByPage?pageNumber={pageIndex}&pageSize={pageSize}&timestamp={timestamp}&classifyId=&queryType=&title=&statusType=all&sortType=all&classifyType=all&order=desc&image_text=all&liveCourseStatus=false&access_token={token}";
 
@@ -74,14 +75,18 @@ class CourseList extends React.Component {
         })).then(res => {
             const data = res.data;
             if ('code' in data && data['code'] === 801) {
-                window.location.href = 'https://pro.coolcollege.cn/#/index-auth-login-new?source=ding';
-                return;
+                Preferences.setString("/cool_college/toke", "").then(res => {
+                    console.log(res);
+                    // window.location.href = 'https://pro.coolcollege.cn/#/index-auth-login-new?source=ding';
+                });
+            } else {
+                this.setState({
+                    totalPage: data['pages'],
+                    pageIndex: data['pageNum'],
+                    items: data['list']
+                })
             }
-            this.setState({
-                totalPage: data['pages'],
-                pageIndex: data['pageNum'],
-                items: data['list']
-            })
+
         })
     };
 
@@ -93,6 +98,7 @@ class CourseList extends React.Component {
                     <CourseDetail
                         token={this.props.token}
                         courseId={this.state.selectedCourseId}
+                        settings={this.props.settings}
                         onClose={() => {
                             this.setState({
                                 showDetail: false
@@ -102,13 +108,16 @@ class CourseList extends React.Component {
                         <Box style={{height: 48, minHeight: 48, maxHeight: 48, width: '100%'}}>
 
                         </Box>
-                        <Scrollbars autoHeightMin={document.body.offsetHeight - 136}>
-                            <Grid container direction="row" justifyContent="space-evenly" alignItems="flex-start" spacing={4}>
+                        <Scrollbars autoHide
+                                    autoHideTimeout={1000}
+                                    autoHideDuration={200} autoHeightMin={document.body.offsetHeight - 136}>
+                            <Grid container direction="row" justifyContent="space-evenly" alignItems="flex-start"
+                                  style={{width: '100%', margin: 0}}
+                                  spacing={4}>
                                 {
                                     this.state.items.map((item, index) => (
                                         <Grid item lg={2} md={3} sm={3} xl={3} xs={6} key={'item-' + index}>
                                             <Card className={classes.card} onClick={() => {
-                                                // this.fetchDetail(item['id']);
                                                 this.setState({
                                                     selectedCourseId: item['id'],
                                                     showDetail: true
