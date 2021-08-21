@@ -14,6 +14,7 @@ import axios from "axios";
 import CloseIcon from '@material-ui/icons/Close';
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const courseDetailUrl = "https://coolapi.coolcollege.cn/enterprise-api/course/selectOne?id={courseId}&appType=&access_token={token}";
 
@@ -53,26 +54,26 @@ class CourseDetail extends React.Component {
 
     render() {
         const classes = this.props.classes;
-        return <Container style={{padding: 0, height: '100%', maxHeight: '100%'}}>
-            <AppBar position="fixed" style={{paddingLeft: 150}}>
-                <Toolbar>
-                    <IconButton edge="start" color="inherit" onClick={() => {
-                        this.props.onClose();
-                    }} aria-label="close">
-                        <CloseIcon/>
-                    </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        {
-                            this.state.title
-                        }
-                    </Typography>
-                    <Button autoFocus color="inherit" onClick={() => {
-                        console.log("下载所有");
-                    }}>
-                        下载所有
-                    </Button>
-                </Toolbar>
-            </AppBar>
+        return <Scrollbars autoHeightMin={document.body.offsetHeight - 40}>
+            {/*<AppBar position="fixed" style={{paddingLeft: 150}}>*/}
+            {/*    <Toolbar>*/}
+            {/*        <IconButton edge="start" color="inherit" onClick={() => {*/}
+            {/*            this.props.onClose();*/}
+            {/*        }} aria-label="close">*/}
+            {/*            <CloseIcon/>*/}
+            {/*        </IconButton>*/}
+            {/*        <Typography variant="h6" className={classes.title}>*/}
+            {/*            {*/}
+            {/*                this.state.title*/}
+            {/*            }*/}
+            {/*        </Typography>*/}
+            {/*        <Button autoFocus color="inherit" onClick={() => {*/}
+            {/*            console.log("下载所有");*/}
+            {/*        }}>*/}
+            {/*            下载所有*/}
+            {/*        </Button>*/}
+            {/*    </Toolbar>*/}
+            {/*</AppBar>*/}
             <List style={{height: '100%', maxHeight: '100%'}}>
                 {
                     this.state.detailItems.map((item, index) => (
@@ -87,7 +88,7 @@ class CourseDetail extends React.Component {
                     ))
                 }
             </List>
-        </Container>
+        </Scrollbars>
     }
 }
 

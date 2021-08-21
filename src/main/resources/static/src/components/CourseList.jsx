@@ -16,6 +16,8 @@ import {
 import {Pagination} from "@material-ui/lab";
 import axios from "axios";
 import CourseDetail from "@/components/CourseDetail";
+import Container from "@material-ui/core/Container";
+import {Scrollbars} from "react-custom-scrollbars";
 
 const courseUrl = "https://coolapi.coolcollege.cn/enterprise-api/course/queryCourseByPage?pageNumber={pageIndex}&pageSize={pageSize}&timestamp={timestamp}&classifyId=&queryType=&title=&statusType=all&sortType=all&classifyType=all&order=desc&image_text=all&liveCourseStatus=false&access_token={token}";
 
@@ -28,12 +30,19 @@ const styles = theme => ({
     },
     bottomAppBar: {
         top: 'auto',
-        bottom: 0,
-        paddingLeft: 150
+        bottom: 0
     },
     title: {
         marginLeft: theme.spacing(2),
         flex: 1,
+    },
+    container: {
+        width: '100%',
+        maxWidth: '100%',
+        maxHeight: '100%',
+        height: 'calc(100% - 48px)',
+        margin: 0,
+        padding: 0
     },
 });
 
@@ -78,7 +87,7 @@ class CourseList extends React.Component {
 
     render() {
         const classes = this.props.classes;
-        return <React.Fragment>
+        return <Container className={classes.container}>
             {
                 this.state.showDetail ?
                     <CourseDetail
@@ -89,36 +98,41 @@ class CourseList extends React.Component {
                                 showDetail: false
                             })
                         }}
-                    /> : <Box style={{padding: 0}}>
-                        <Grid container direction="row" justifyContent="space-evenly" alignItems="flex-start" spacing={4}>
-                            {
-                                this.state.items.map((item, index) => (
-                                    <Grid item lg={2} md={3} sm={3} xl={3} xs={6} key={'item-' + index}>
-                                        <Card className={classes.card} onClick={() => {
-                                            // this.fetchDetail(item['id']);
-                                            this.setState({
-                                                selectedCourseId: item['id'],
-                                                showDetail: true
-                                            })
-                                        }}>
-                                            <CardActionArea>
-                                                <CardMedia
-                                                    className={classes.media}
-                                                    image={item['cover']}
-                                                    title={item['title']}
-                                                />
-                                                <CardContent>
-                                                    <Typography gutterBottom variant="subtitle2">
-                                                        {item['title']}
-                                                    </Typography>
-                                                </CardContent>
-                                            </CardActionArea>
-                                        </Card>
-                                    </Grid>
-                                ))
-                            }
-                        </Grid>
-                        <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
+                    /> : <Box style={{paddingLeft: 12, paddingTop: 12, paddingRight: 12, height: 'calc(100% - 64px)'}}>
+                        <Box style={{height: 48, minHeight: 48, maxHeight: 48, width: '100%'}}>
+
+                        </Box>
+                        <Scrollbars autoHeightMin={document.body.offsetHeight - 136}>
+                            <Grid container direction="row" justifyContent="space-evenly" alignItems="flex-start" spacing={4}>
+                                {
+                                    this.state.items.map((item, index) => (
+                                        <Grid item lg={2} md={3} sm={3} xl={3} xs={6} key={'item-' + index}>
+                                            <Card className={classes.card} onClick={() => {
+                                                // this.fetchDetail(item['id']);
+                                                this.setState({
+                                                    selectedCourseId: item['id'],
+                                                    showDetail: true
+                                                })
+                                            }}>
+                                                <CardActionArea>
+                                                    <CardMedia
+                                                        className={classes.media}
+                                                        image={item['cover']}
+                                                        title={item['title']}
+                                                    />
+                                                    <CardContent>
+                                                        <Typography gutterBottom variant="subtitle2">
+                                                            {item['title']}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </CardActionArea>
+                                            </Card>
+                                        </Grid>
+                                    ))
+                                }
+                            </Grid>
+                        </Scrollbars>
+                        <AppBar position="static" color="default" className={classes.bottomAppBar}>
                             <Toolbar>
                                 <Grid container spacing={4}>
                                     <Grid item>
@@ -159,7 +173,7 @@ class CourseList extends React.Component {
                         </AppBar>
                     </Box>
             }
-        </React.Fragment>
+        </Container>
     }
 }
 

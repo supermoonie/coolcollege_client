@@ -11,6 +11,7 @@ class TabPanel extends React.Component {
     render() {
         const {children, value, index, ...other} = this.props;
         return <div
+            style={{width: '100%', height: '100%'}}
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
@@ -18,7 +19,7 @@ class TabPanel extends React.Component {
             {...other}
         >
             {value === index && (
-                <Box p={3}>
+                <Box p={0} style={{width: '100%', height: '100%'}}>
                     {children}
                 </Box>
             )}
