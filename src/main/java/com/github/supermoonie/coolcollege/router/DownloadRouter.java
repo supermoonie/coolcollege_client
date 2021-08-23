@@ -122,7 +122,9 @@ public class DownloadRouter extends CefMessageRouterHandlerAdapter {
                             InputStream is = entity.getContent();
                             if (-1 == contentLength) {
                                 try (FileOutputStream fos = new FileOutputStream(target)) {
-                                    IOUtils.write(is.readAllBytes(), fos);
+                                    byte[] buffer = new byte[is.available()];
+                                    IOUtils.readFully(is, buffer);
+                                    IOUtils.write(buffer, fos);
                                 }
                                 DownloadInfo doneInfo = buildDownloadInfo(req.getDownloadId(), req.getSavePath(), fileName, 100, "done", null);
                                 PROGRESS_QUEUE.add(doneInfo);
