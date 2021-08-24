@@ -206,7 +206,7 @@ class ResourceList extends React.Component {
                                                         {index + 1}
                                                     </TableCell>
                                                     <TableCell component="th" scope="row" align="center">
-                                                        {item['resource']['actualName']}
+                                                        {item['resource']['name']}
                                                     </TableCell>
                                                     <TableCell
                                                         align="center">{new Date(item['resource']['createTime']).format('yyyy-MM-dd hh:mm:ss')}</TableCell>
@@ -216,7 +216,7 @@ class ResourceList extends React.Component {
                                                         <IconButton edge="start" aria-label="download" size="small" onClick={() => {
                                                             Download.downloadReq([{
                                                                 downloadId: item['resource']['id'],
-                                                                url: item['resource']['type'] === 'mp4' ? item['resource']['path'] : item['resource']['url'],
+                                                                url: item['resource']['url'],
                                                                 savePath: this.props.settings.downloadFolder,
                                                                 fileName: item['resource']['name'],
                                                                 extension: item['resource']['type']
