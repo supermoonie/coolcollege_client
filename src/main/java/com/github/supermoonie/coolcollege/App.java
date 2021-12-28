@@ -101,7 +101,7 @@ public class App extends JFrame {
         String indexUrl = "https://pro.coolcollege.cn/#/index-auth-login-new?source=ding";
         String eid = preferences.get("/cool_college/eid", null);
         if (StringUtils.isNotEmpty(eid)) {
-            indexUrl = String.format("https://pro.coolcollege.cn/?eid=%s#/home", eid);
+            indexUrl = "https://pro.coolcollege.cn/#/home";
         }
         log.info("indexUrl: {}", indexUrl);
         cefBrowser = client.createBrowser(indexUrl, false, false);
