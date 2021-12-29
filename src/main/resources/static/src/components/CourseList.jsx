@@ -75,7 +75,7 @@ class CourseList extends React.Component {
         })).then(res => {
             const data = res.data;
             if ('code' in data && data['code'] === 801) {
-                Preferences.setString("/cool_college/toke", "").then(res => {
+                Preferences.setString("/cool_college/token", "").then(res => {
                     console.log(res);
                     // window.location.href = 'https://pro.coolcollege.cn/#/index-auth-login-new?source=ding';
                 });

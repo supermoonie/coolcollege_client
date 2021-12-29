@@ -27,7 +27,6 @@ public class PropertiesUtil {
 
     public static String getHost() {
         String host = PROPERTIES.getProperty("host");
-        log.info("host: {}", host);
         return host;
     }
 

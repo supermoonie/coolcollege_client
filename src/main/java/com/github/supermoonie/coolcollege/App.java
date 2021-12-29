@@ -99,8 +99,8 @@ public class App extends JFrame {
         cefApp = JCefLoader.installAndLoadCef(settings);
         client = cefApp.createClient();
         String indexUrl = "https://pro.coolcollege.cn/#/index-auth-login-new?source=ding";
-        String eid = preferences.get("/cool_college/eid", null);
-        if (StringUtils.isNotEmpty(eid)) {
+        String token = preferences.get("/cool_college/token", null);
+        if (StringUtils.isNotEmpty(token)) {
             indexUrl = "https://pro.coolcollege.cn/#/home";
         }
         log.info("indexUrl: {}", indexUrl);

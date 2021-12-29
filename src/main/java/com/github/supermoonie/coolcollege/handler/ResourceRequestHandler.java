@@ -3,6 +3,7 @@ package com.github.supermoonie.coolcollege.handler;
 import com.github.supermoonie.coolcollege.App;
 import com.github.supermoonie.coolcollege.utils.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.handler.CefResourceRequestHandlerAdapter;
@@ -27,7 +28,11 @@ public class ResourceRequestHandler extends CefResourceRequestHandlerAdapter {
     @Override
     public boolean onBeforeResourceLoad(CefBrowser browser, CefFrame frame, CefRequest request) {
         String url = request.getURL();
-        if (frame.getURL().startsWith(PropertiesUtil.getHost())) {
+        final String host = PropertiesUtil.getHost();
+        log.info("url: {}", url);
+        if (url.startsWith(host) || frame.getURL().startsWith(host)
+                || url.startsWith("https://pro.coolcollege.cn/api/blacklist/info")
+                || url.startsWith("https://coolapi.coolcollege.cn/cmdb-api/v2/enterprises/register_type/get")) {
             return super.onBeforeResourceLoad(browser, frame, request);
         }
         boolean loginFlag = false;
@@ -45,11 +50,11 @@ public class ResourceRequestHandler extends CefResourceRequestHandlerAdapter {
             App.getPreferences().put("/cool_college/token", token);
             loginFlag = true;
         }
-        if (loginFlag) {
+        final String eid = App.getPreferences().get("/cool_college/eid", null);
+        final String token = App.getPreferences().get("/cool_college/token", null);
+        log.info("url: {}, eid: {}, token: {}", url, eid, token);
+        if (loginFlag && StringUtils.isNotBlank(token)) {
             SwingUtilities.invokeLater(() -> {
-                String eid = App.getPreferences().get("/cool_college/eid", null);
-                String token = App.getPreferences().get("/cool_college/token", null);
-                String host = PropertiesUtil.getHost();
                 App.getInstance().getCefBrowser().loadURL(host + "/index.html?token=" + token + "&eid=" + eid);
             });
         }
